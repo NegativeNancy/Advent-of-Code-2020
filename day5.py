@@ -6,11 +6,10 @@ def get_input(location):
 
 
 def find_place(line, lower, upper):
-    if (lower == "F") or (upper == "F"):
-        minimum = 0
+    minimum = 0
+    if (upper == "F"):
         maximum = 127
     else:
-        minimum = 0
         maximum = 7
 
     for char in line:
