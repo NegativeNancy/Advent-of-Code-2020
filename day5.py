@@ -45,17 +45,14 @@ def new_value(mi, ma):
 
 def find_seat_id(row, column):
     seat = row * 8 + column
-    print("Seat row:", row, "column:", column, "seat:", seat)
     return seat
 
 
 def find_my_seat(seats):
-    for seat1 in seats:
-        for seat2 in seats:
-            next_seat = (seat1 + 1)
-            previous_seat = (seat2 - 1)
-            if (next_seat not in seats) and (previous_seat not in seats) and (next_seat < len(seats)):
-                print("My seat is:", (seat1 + 1))
+    for seat in seats:
+        next_seat = (seat + 1)
+        if (next_seat not in seats) and (next_seat < len(seats)):
+            print("My seat is:", (next_seat))
 
 
 if __name__ == "__main__":
