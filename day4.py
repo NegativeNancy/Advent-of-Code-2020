@@ -3,11 +3,7 @@ import string
 def get_input(input):
     with open(input) as fhand:
         data = fhand.readlines()
-    
-    for line in data:
-        line = line.strip()
-        line += line * 4
-    
+        
     return data
     
 
