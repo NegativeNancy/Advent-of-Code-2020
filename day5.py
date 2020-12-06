@@ -1,35 +1,22 @@
 def get_input(location):
     location = "input/" + location
     with open(location) as fhand:
-        data = fhand.readlines()
-
-    new_data = []
-    for line in data:
-        new_data.append(line.strip())
-    return new_data
+        data = [line.strip() for line in fhand]
+    return data
 
 
-def find_row(data):
-    minimum = 0
-    maximum = 127
-
-    for char in line:
-        if (char == "B"):
-            minimum = int(new_value(minimum, maximum))
-        elif (char == "F"):
-            maximum = int(new_value(minimum, maximum))
-
-    return maximum
-
-
-def find_column(data):
-    minimum = 0
-    maximum = 7
+def find_place(line, lower, upper):
+    if (lower == "F") or (upper == "F"):
+        minimum = 0
+        maximum = 127
+    else:
+        minimum = 0
+        maximum = 7
 
     for char in line:
-        if (char == "R"):
+        if (char == lower):
             minimum = int(new_value(minimum, maximum))
-        elif (char == "L"):
+        elif (char == upper):
             maximum = int(new_value(minimum, maximum))
 
     return maximum
@@ -44,11 +31,14 @@ def new_value(mi, ma):
 
 
 def find_seat_id(row, column):
-    seat = row * 8 + column
-    return seat
+    return row * 8 + column
 
 
-def find_my_seat(seats):
+def solve1(seats):
+    print("Highest seat ID:", max(seats))
+
+
+def solve2(seats):
     for seat in seats:
         next_seat = (seat + 1)
         if (next_seat not in seats) and (next_seat < len(seats)):
@@ -60,13 +50,12 @@ if __name__ == "__main__":
     data = get_input("day5.txt")
     
     seats = []
-    highest = 0
-    for line in data:        
-        seat = find_seat_id(find_row(line),find_column(line))
-        seats.append(seat)
-        if (int(seat) > highest):
-            highest = seat
+    for line in data:    
+        row = find_place(line, "B", "F")    
+        column = find_place(line, "R", "L")
+        seats.append(find_seat_id(row, column))
+
+    seats = sorted(seats)
     
-    print("Highest seat ID:", highest)
-    seats_1 = sorted(seats)
-    find_my_seat(seats_1)
+    solve1(seats)
+    solve2(seats)
