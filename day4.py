@@ -75,16 +75,13 @@ def check_validity(data):
 
     for line in data.split():
         if "byr" in line:
-            value = int(get_value(line))
-            if (value >= 1920) and (value <= 2002):
+            if (int(get_value(line)) >= 1920) and (int(get_value(line)) <= 2002):
                 byr = True
         elif "iyr" in line:
-            value = int(get_value(line))
-            if (value >= 2010) and (value <= 2020):
+            if (int(get_value(line)) >= 2010) and (int(get_value(line)) <= 2020):
                 iyr = True 
         elif "eyr" in line:
-            value = int(get_value(line))
-            if (value >= 2020) and (value <= 2030):
+            if (int(get_value(line)) >= 2020) and (int(get_value(line)) <= 2030):
                 eyr = True
         elif "hgt" in line:
             value = get_value(line)
