@@ -1,74 +1,67 @@
 def get_input(location):
     location = "input/" + location
-    instructions = []
+    instructions = {}
+    counter = 0
+
     with open(location) as fhand:
         for line in fhand:
-            instruction = {}
             inst, arg = line.strip().split(" ")
-            instruction[inst] = arg
-            instructions.append(instruction)
+            instruction = [inst, int(arg), False]
+            instructions[counter] = instruction
+            counter += 1
     
-    # print(instructions)
     return instructions
 
-def run_machine_code(instructions, flag):
+
+def run_machine_code(instructions):
     accumulator = 0
     counter = 0
-    old_counter = counter
     
-    while counter < len(instructions):
-        print(instructions[counter])
-        if ("acc" in instructions[counter].keys()) and (len(instructions[counter]) == 1):
-            accumulator = eval(str(accumulator) + instructions[counter].get("acc"))
-            done = {"done": "done"}
-            instructions[counter].update(done)
-            old_counter = counter
+    while True:
+        if counter not in instructions.keys():
+            return accumulator, True
+        
+        line = instructions[counter]
+
+        if (line[2]):
+            return accumulator, False
+        elif (line[0] == "acc"):
+            accumulator += line[1]
             counter += 1
-        elif "jmp" in instructions[counter].keys() and (len(instructions[counter]) == 1):
-            jump = eval(str(counter) + instructions[counter].get("jmp"))
-            old_counter = counter
-            counter = jump
-        elif "nop" in instructions[counter].keys() and (len(instructions[counter]) == 1):
-            old_counter = counter
+        elif (line[0] == "jmp"):
+            counter += line[1]
+        elif (line[0] == "nop"):
             counter += 1
-        elif (len(instructions[counter]) > 1) and (flag == 1):
-            return accumulator
-        elif (len(instructions[counter]) > 1) and (flag == 2):
-            accumulator, counter, old_counter = stop_endless(instructions, accumulator, counter, old_counter)
+        line[2] = True
 
-    return accumulator
 
-def stop_endless(instructions, accumulator, counter, old_counter):
-    print("Current instruction:", instructions[counter])
-    print("Previous instruction:", instructions[old_counter])
+def stop_the_loop(instructions, location):
+    for key in instructions.keys():
+        instruction = instructions[key]
 
-    if ("nop" in instructions[old_counter].keys()):
-        jump = eval(str(counter) + instructions[old_counter].get("nop"))
-        old_counter = counter
-        counter = jump
-    elif ("jmp" in instructions[old_counter].keys()):
-        done = {"done": "done"}
-        instructions[old_counter].update(done)
-        old_counter += 1
-    elif ("acc" in instructions[old_counter].keys()):
-        accumulator = eval(str(accumulator) + instructions[old_counter].get("acc"))
-        done = {"done": "done"}
-        instructions[old_counter].update(done)
-        old_counter += 1
-    
-    return accumulator, counter, old_counter
+        if (instruction[0] == "nop") and (instruction[1] > 0):
+            instruction[0] = "jmp"
+        elif (instruction[0] == "jmp"):
+            instruction[0] = "nop"
+        
+        loop_broken = run_machine_code(instructions)
+        if loop_broken[1]:
+            return loop_broken[0]
+        
+        instructions = get_input(location)
 
 
 def solution1(instructions):
-    print("Accumulator solution 1:", run_machine_code(instructions, 1))
+    print("Accumulator solution 1:", run_machine_code(instructions)[0])
 
-def solution2(instructions):
-    print("Accumulator solution 2:", run_machine_code(instructions, 2))
+
+def solution2(instructions, filename):
+    print("Accumulator solution 2:", stop_the_loop(instructions, filename))
 
 
 if __name__ == "__main__":
-    instructions = get_input("test.txt")
-    # instructions = get_input("day8.txt")
-    instructions2 = instructions
-    # solution1(instructions)
-    solution2(instructions2)
+    # filename = "test.txt"
+    filename = "day8.txt"
+
+    solution1(get_input(filename))
+    solution2(get_input(filename), filename)
